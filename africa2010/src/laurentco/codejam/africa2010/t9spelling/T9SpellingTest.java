@@ -26,4 +26,12 @@ public class T9SpellingTest extends TestCase {
 		System.out.println(sw.toString());
 		assertEquals("Case #1: 999337777", sw.toString());
 	}
+	
+	public void testT92Seq() throws Exception {
+		StringWriter sw = new StringWriter();
+		T9Spelling2.process(new Scanner("1\nyes"), new PrintWriter(sw));
+		sw.close();
+		System.out.println(sw.toString());
+		assertEquals("Case #1: 999337777", sw.toString());
+	}
 }

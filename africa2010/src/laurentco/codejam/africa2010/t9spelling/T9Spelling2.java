@@ -6,16 +6,32 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 /**
- * First solution: Mix of computed and hardcoded strings
+ * Second solution: index (t9speller) pre-computed based on dialer keys configuration input
  * 
  * @author Laurent
  *
  */
-public class T9Spelling {
+public class T9Spelling2 {
+	
+	private static final char[][] dialer = { 
+		{ ' ' },
+		{ },
+		{ 'a','b','c' },
+		{ 'd','e','f' },
+		{ 'g','h','i' },
+		{ 'j','k','l' },
+		{ 'm','n','o' },
+		{ 'p','q','r','s' },
+		{ 't','u','v' },
+		{ 'w','x','y', 'z' }
+	};
+	
+	private static Map<Character, String> t9speller = initSpeller(dialer);
 
 	public static void main(String[] args) throws IOException {
 		InputStream in = System.in;
@@ -30,7 +46,6 @@ public class T9Spelling {
 		scanner.close();
 		writer.close();
 	}
-	
 
 	public static void process(Scanner in, PrintWriter out) throws IOException {
 		int cases = in.nextInt();
@@ -40,7 +55,7 @@ public class T9Spelling {
 			out.print("Case #" + i + ": ");
 			char last = '#';
 			for(int j=0;j<msg.length();j++) {
-				String s = t9(msg.charAt(j));
+				String s = t9speller.get(msg.charAt(j));
 				if(last == s.charAt(0))
 					out.print(' ');
 				out.print(s);
@@ -51,26 +66,17 @@ public class T9Spelling {
 		}
 	}
 	
-	public static String t9(char letter) {
-		switch(letter) {
-			case ' ': return "0";
-			case 's': return "7777";
-			case 't': return "8";
-			case 'u': return "88";
-			case 'v': return "888";
-			case 'w': return "9";
-			case 'x': return "99";
-			case 'y': return "999";
-			case 'z': return "9999";
-			default:
-				int diff = letter - 'a';
-				int number = 2 + (diff / 3);
-				switch(diff % 3) {
-					case 0: return number + "";
-					case 1: return number + "" + number;
-					case 2: return number + "" + number + "" + number;
-					default: return "";
-				}
+	private static Map<Character, String> initSpeller(char[][] dial) {
+		Map<Character, String> speller = new HashMap<Character,String>();
+		StringBuilder keys = new StringBuilder();
+		for(int i=0 ; i<dial.length ; i++) {
+			keys.setLength(0);
+			for(int j=0 ; j<dial[i].length ; j++) {
+				char c = dial[i][j];
+				keys.append(i);
+				speller.put(c, keys.toString());
+			}
 		}
+		return speller;
 	}
 }
